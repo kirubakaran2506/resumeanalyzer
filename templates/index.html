@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ResumeAI — Intelligent Resume Analyzer</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@400;500;700;800;900&family=Instrument+Serif:ital@0;1&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <div class="grid-bg"></div>
+
+  <!-- ── NAV ── -->
+  <nav class="navbar">
+    <div class="nav-logo">
+      <div class="logo-mark">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <rect x="0" y="0" width="7" height="7" rx="1.5" fill="currentColor"/>
+          <rect x="9" y="0" width="7" height="7" rx="1.5" fill="currentColor" opacity="0.5"/>
+          <rect x="0" y="9" width="7" height="7" rx="1.5" fill="currentColor" opacity="0.5"/>
+          <rect x="9" y="9" width="7" height="7" rx="1.5" fill="currentColor" opacity="0.25"/>
+        </svg>
+      </div>
+      <span>ResumeAI</span>
+    </div>
+    <div class="nav-mid">NLP · Skill Detection · Job Matching</div>
+    
+  </nav>
+
+  <!-- ══════════════ HERO ══════════════ -->
+  <section class="hero" id="hero">
+    <div class="hero-left">
+      <p class="hero-tag"></span>Resume Analysis</p>
+
+      <h1 class="hero-title">
+        Your resume,<br />
+        <em>decoded.</em>
+      </h1>
+
+      <p class="hero-sub">
+        Upload your resume and receive an instant AI-powered breakdown — skills, score, job matches, and personalised improvement tips in seconds.
+      </p>
+
+      <div class="hero-metrics">
+        <div class="metric">
+          <span class="metric-val">80+</span>
+          <span class="metric-key">Skills tracked</span>
+        </div>
+        <div class="metric-div"></div>
+        <div class="metric">
+          <span class="metric-val">10</span>
+          <span class="metric-key">Job roles</span>
+        </div>
+        <div class="metric-div"></div>
+        <div class="metric">
+          <span class="metric-val">100</span>
+          <span class="metric-key">Point score</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-right">
+      <div class="upload-card" id="uploadZone">
+        <input type="file" id="fileInput" accept=".pdf,.txt" hidden />
+
+        <div id="uploadDefault">
+          <div class="upload-visual">
+            <div class="uv-icon">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <line x1="12" y1="18" x2="12" y2="12"/>
+                <line x1="9" y1="15" x2="15" y2="15"/>
+              </svg>
+            </div>
+            <div class="uv-rings">
+              <div class="uvr uvr-1"></div>
+              <div class="uvr uvr-2"></div>
+              <div class="uvr uvr-3"></div>
+            </div>
+          </div>
+          <p class="upload-heading">Drop your resume here</p>
+          <p class="upload-hint">PDF or TXT &nbsp;·&nbsp; Max 10MB</p>
+          <button class="btn-primary" id="browseBtn">
+            Choose File
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+          <div class="fmt-row">
+            <span class="fmt">PDF</span>
+            <span class="fmt">TXT</span>
+          </div>
+        </div>
+
+        <div id="uploadSelected" style="display:none;">
+          <div class="selected-file">
+            <div class="sf-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            </div>
+            <div class="sf-text">
+              <span class="sf-name" id="fileName">resume.pdf</span>
+              <span class="sf-ready">Ready to analyze</span>
+            </div>
+            <button class="sf-remove" id="removeFile">✕</button>
+          </div>
+          <button class="btn-analyze" id="analyzeBtn">
+            Analyze Resume
+            <span class="btn-arrow">→</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="pill-row">
+        <span class="pill">Score</span>
+        <span class="pill">Skills</span>
+        <span class="pill">Jobs</span>
+        <span class="pill">Tips</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── LOADING ── -->
+  <div class="loading-overlay" id="loadingOverlay" style="display:none;">
+    <div class="loading-box">
+      <div class="loader-bars">
+        <span></span><span></span><span></span><span></span><span></span>
+      </div>
+      <p class="loading-title">Analyzing Resume</p>
+      <p class="loading-step" id="loadingMsg">Extracting text…</p>
+      <div class="loading-track">
+        <div class="loading-fill" id="loadingBar"></div>
+      </div>
+      <div class="loading-chips">
+        <span class="lchip active" id="ls1">Extract</span>
+        <span class="lchip" id="ls2">Skills</span>
+        <span class="lchip" id="ls3">Score</span>
+        <span class="lchip" id="ls4">Match</span>
+        <span class="lchip" id="ls5">Tips</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ DASHBOARD ══════════════ -->
+  <section class="dashboard" id="dashboard" style="display:none;">
+
+    <div class="dash-bar">
+      <div class="dash-crumb">
+        <span>ResumeAI</span>
+        <span class="crumb-sep">›</span>
+        <span class="crumb-active">Results</span>
+      </div>
+      <button class="btn-ghost" id="resetBtn">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+        Analyze Another
+      </button>
+    </div>
+
+    <!-- Bento Grid -->
+    <div class="bento">
+
+      <!-- Score Card -->
+      <div class="bcard bcard-score anim" style="--d:0s">
+        <div class="bcard-label"><span class="bl-num">01</span><span>Resume Score</span></div>
+        <div class="score-layout">
+          <div class="ring-wrap">
+            <svg class="ring-svg" viewBox="0 0 160 160">
+              <defs>
+                <linearGradient id="rg" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#e8ff47"/>
+                  <stop offset="100%" stop-color="#ff6b47"/>
+                </linearGradient>
+              </defs>
+              <circle class="rc-bg" cx="80" cy="80" r="68"/>
+              <circle class="rc-fill" id="scFill" cx="80" cy="80" r="68"
+                stroke-dasharray="427" stroke-dashoffset="427"/>
+            </svg>
+            <div class="ring-center">
+              <span class="rnum" id="scoreNumber">0</span>
+              <span class="rof">/100</span>
+            </div>
+          </div>
+          <div class="score-meta">
+            <div class="score-grade" id="scoreBadge">—</div>
+            <div class="score-desc" id="scoreDesc"></div>
+            <div class="bdown" id="breakdownList"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Skills Card -->
+      <div class="bcard bcard-skills anim" style="--d:.1s">
+        <div class="bcard-label">
+          <span class="bl-num">02</span>
+          <span>Skills Detected</span>
+          <span class="bl-badge" id="skillCount">0</span>
+        </div>
+        <div class="skills-scroll" id="skillsBody"></div>
+      </div>
+
+      <!-- Jobs Card -->
+      <div class="bcard bcard-jobs anim" style="--d:.18s">
+        <div class="bcard-label"><span class="bl-num">03</span><span>Job Matches</span></div>
+        <div class="jobs-list" id="jobsBody"></div>
+      </div>
+
+      <!-- Tips Card -->
+      <div class="bcard bcard-tips anim" style="--d:.26s">
+        <div class="bcard-label"><span class="bl-num">04</span><span>Improvement Tips</span></div>
+        <ul class="tips-ul" id="tipsList"></ul>
+      </div>
+
+    </div>
+
+    <!-- Footer stats -->
+    <div class="dash-stats anim" style="--d:.34s">
+      <div class="ds-item"><span class="ds-val" id="wordCount">—</span><span class="ds-key">Words</span></div>
+      <div class="ds-div"></div>
+      <div class="ds-item"><span class="ds-val" id="charCount">—</span><span class="ds-key">Characters</span></div>
+      <div class="ds-div"></div>
+      <div class="ds-item"><span class="ds-val" id="skillTotal">—</span><span class="ds-key">Skills Found</span></div>
+      <div class="ds-div"></div>
+      <div class="ds-item"><span class="ds-val" id="jobCount">—</span><span class="ds-key">Roles Matched</span></div>
+    </div>
+
+  </section>
+
+  <!-- Toast -->
+  <div class="toast" id="toast" style="display:none;">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    <span id="toastMsg"></span>
+    <button onclick="document.getElementById('toast').style.display='none'">✕</button>
+  </div>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
