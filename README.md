@@ -98,5 +98,5 @@ Use Cases
 * Developers building AI projects
 
   
-<img width="1428" height="755" alt="Untitled" src="https://github.com/user-attachments/assets/37b512b6-0261-4fb4-840d-c758a4c50e52" />
-<img width="1411" height="768" alt="Untitled 2" src="https://github.com/user-attachments/assets/8c00dc50-a3c0-471b-807d-c30f3a2bae36" />
+<img width="1428" height="755" alt="Untitled" src="ex.png" />
+<img width="1411" height="768" alt="Untitled 2" src="ex1.png" />
